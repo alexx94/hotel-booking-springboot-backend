@@ -32,7 +32,8 @@ public class AvailabilityService {
         List<Availability> availabilities = availabilityRepository.findByRoomId(roomId);
 
         for (Availability availability : availabilities) {
-            if (!availability.isClosed() || availability.getAvailableCount() > 0) {
+
+            if (!availability.isClosed() && availability.getAvailableCount() > 0) {
                 availableDates.add(availability.getBookingDate());
             }
         }
@@ -53,7 +54,7 @@ public class AvailabilityService {
         return true;
     }
 
-    // Change the isClosed value within of a room type between a certain date range
+    // Change the isClosed value of a room type between a certain date range
     public void changeAvailabilityStatus(Long roomId, LocalDate startDate, LocalDate endDate, boolean isClosed) {
         List<Availability> availabilities = availabilityRepository
                 .findByRoomIdAndBookingDateBetween(roomId, startDate, endDate);
