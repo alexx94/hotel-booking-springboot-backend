@@ -21,6 +21,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+    // test method, I don't think it will be used, just to check if Events worked fine before moving forward
     @GetMapping("/available")
     public ResponseEntity<String> checkBookingAvailability(@RequestBody BookingDto input) {
         String message = bookingService.testCreateEvent(input);

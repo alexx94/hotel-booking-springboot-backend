@@ -41,6 +41,30 @@ public class AvailabilityService {
         return availableDates;
     }
 
+    public List<LocalDate> getRoomClosedDates(Long roomId) {
+        List<LocalDate> availableDates = new ArrayList<>();
+        List<Availability> availabilities = availabilityRepository.findByRoomId(roomId);
+        for (Availability availability : availabilities) {
+            if (availability.isClosed()) {
+                availableDates.add(availability.getBookingDate());
+            }
+        }
+
+        return availableDates;
+    }
+
+    public List<LocalDate> getRoomFullyBookedDates(Long roomId) {
+        List<LocalDate> availableDates = new ArrayList<>();
+        List<Availability> availabilities = availabilityRepository.findByRoomId(roomId);
+        for (Availability availability : availabilities) {
+            if (availability.getAvailableCount() == 0) {
+                availableDates.add(availability.getBookingDate());
+            }
+        }
+
+        return availableDates;
+    }
+
     public List<Availability> getRoomBetweenDates(Long roomId, LocalDate startDate, LocalDate endDate) {
         return availabilityRepository.findByRoomIdAndBookingDateBetween(roomId, startDate, endDate);
     }
@@ -54,11 +78,20 @@ public class AvailabilityService {
         return true;
     }
 
-    // Change the isClosed value of a room type between a certain date range
-    public void changeAvailabilityStatus(Long roomId, LocalDate startDate, LocalDate endDate, boolean isClosed) {
-        List<Availability> availabilities = availabilityRepository
-                .findByRoomIdAndBookingDateBetween(roomId, startDate, endDate);
+    // TODO: Method that changes isClosed status of a room type for ALL entries, fully open or fully close
+    public List<Availability> initializeAvailabilities(Long roomId) {
+        return availabilityRepository.findByRoomId(roomId);
+    }
 
+    public List<Availability> initializeAvailabilities(Long roomId, LocalDate startDate, LocalDate endDate) {
+        if (startDate != null && endDate != null) {
+            return availabilityRepository.findByRoomIdAndBookingDateBetween(roomId, startDate, endDate);
+        }
+        else return availabilityRepository.findByRoomId(roomId);
+    }
+    // Change the isClosed value of a room type between a certain date range OR for all dates
+    public void changeAvailabilityStatus(Long roomId, LocalDate startDate, LocalDate endDate, boolean isClosed) {
+        List<Availability> availabilities = initializeAvailabilities(roomId, startDate, endDate);
         availabilities.forEach(availability -> availability.setClosed(isClosed));
         availabilityRepository.saveAll(availabilities);
     }

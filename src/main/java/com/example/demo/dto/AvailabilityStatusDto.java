@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class AvailabilityStatusDto {
     private LocalDate startDate;
     private LocalDate endDate;
-    private boolean isClosed;
+    private boolean isClosed; //in json without is, just ' "closed": true ' for ex.
 
     public LocalDate getStartDate() {
         return startDate;

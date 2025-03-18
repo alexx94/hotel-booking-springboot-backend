@@ -29,6 +29,10 @@ public class PricingRuleService {
         return  pricingRules;
     }
 
+    //TODO check for overlapping pricing rules
+    // if pricing overalps -> recommend admin to first delete where it overlaps
+    // Validate dates sent as DTO before proceeding further with POST/PUT methods
+
     public PricingRule createPricingRule(PricingRuleDto input) {
         PricingRule pricingRule = new PricingRule(input.getRoom_id(), input.getStart_date(), input.getEnd_date(), input.getSpecial_price());
         return pricingRuleRepository.save(pricingRule);

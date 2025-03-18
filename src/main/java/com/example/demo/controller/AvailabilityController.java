@@ -28,9 +28,24 @@ public class AvailabilityController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/closed-dates/{id}")
+    public ResponseEntity<List<LocalDate>> getClosedDates(@PathVariable Long id) {
+        List<LocalDate> availableDates = availabilityService.getRoomClosedDates(id);
+        return ResponseEntity.ok(availableDates);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/fully-booked/{id}")
+    public ResponseEntity<List<LocalDate>> getFullyBookedDates(@PathVariable Long id) {
+        List<LocalDate> availableDates = availabilityService.getRoomFullyBookedDates(id);
+        return ResponseEntity.ok(availableDates);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/status/{id}")
-    public ResponseEntity<String> updateAvailalbilityStatus(@PathVariable Long id, @RequestBody AvailabilityStatusDto input) {
+    public ResponseEntity<String> updateAvailabilityStatus(@PathVariable Long id, @RequestBody AvailabilityStatusDto input) {
         availabilityService.changeAvailabilityStatus(id, input.getStartDate(), input.getEndDate(), input.isClosed());
+        //String output = input.getStartDate().toString() + input.getEndDate().toString() + input.isClosed();
         System.out.println(input.isClosed());
         if (input.isClosed()) return ResponseEntity.ok("CLOSED - for Room Id: " + id + " between: " + input.getStartDate() + " and " + input.getEndDate());
         else return ResponseEntity.ok("OPEN - for Room Id: " + id + " between: " + input.getStartDate() + " and " + input.getEndDate());
@@ -42,6 +57,6 @@ public class AvailabilityController {
         return ResponseEntity.ok(availableDates);
     }
 
-    //TODO: adding different criterias for get requests (after id etc.)
+    //TODO: adding different criteria for get requests (after id etc.)
 
 }
